@@ -1,61 +1,122 @@
+module usr_tb(
 
-module universal_shift_register_tb;
-
-    reg clk;
-    reg reset;
-    reg S1, S0;
-    reg SR_in, SL_in;
-    reg [3:0] D;
-
-    wire [3:0] Q;
-
-    universal_shift_register dut(
-        .clk(clk),
-        .reset(reset),
-        .S1(S1),
-        .S0(S0),
-        .SR_in(SR_in),
-        .SL_in(SL_in),
-        .D(D),
-        .Q(Q)
     );
+    reg        clk;
+reg        rst;
+reg        sid;
+reg [3:0]  pid;
+reg        shift;
+reg        load;
+reg [1:0]  mode;
+
+wire [3:0] pout;
+wire       sout;
+
+universal_shift_register dut (
+    .clk   (clk),
+    .rst   (rst),
+    .sid   (sid),
+    .pid   (pid),
+    .shift (shift),
+    .load  (load),
+    .mode  (mode),
+    .pout  (pout),
+    .sout  (sout)
+);
+
+
+
+initial begin
+    clk = 0;
+    forever #5 clk = ~clk;
+end
+
+
+initial begin
+
+   clk = 0;
+    forever #5 clk = ~clk;
+end
+
+
+
+initial begin
+
+
+    rst   = 1;
+    sid   = 0;
+    pid   = 0;
+    shift = 0;
+    load  = 0;
+    mode  = 2'b00;
+
+    #12;
+    rst = 0;
+
+  
+
+    mode  = 2'b00;
+    shift = 1;
+
+    sid = 1; #10;
+    sid = 0; #10;
+    sid = 1; #10;
+    sid = 1; #10;
+
+    shift = 0;
+    #20;
+
+
+    
+
+    mode  = 2'b01;
+    shift = 1;
+
+    sid = 1; #10;
+    sid = 0; #10;
+    sid = 0; #10;
+    sid = 1; #10;
+
+    shift = 0;
+    #20;
+
+
+    mode = 2'b10;
+
+  
+    pid  = 4'b1101;
+    load = 1;
+    #10;
+
+    load  = 0;
+    shift = 1;
+
+    repeat(4) #10;
+
+    shift = 0;
+    #20;
+
+  
+   
+
+    mode = 2'b11;
+
+    pid  = 4'b1010;
+    load = 1;
+    #10;
+
+    load = 0;
+    #20;
+
+    pid  = 4'b0111;
+    load = 1;
+    #10;
+
+    load = 0;
+    #20;
 
    
-    initial
-    begin
-        clk = 0;
-        forever #5 clk = ~clk;
-    end
-
-    initial
-    begin
-        $monitor("Time=%0t S1=%b S0=%b Q=%b",
-                  $time,S1,S0,Q);
-
-        reset = 1;
-        #10;
-        reset = 0;
-
-       
-        S1 = 1; S0 = 1;
-        D = 4'b1010;
-        #10;
-
-        
-        S1 = 0; S0 = 1;
-        SR_in = 1;
-        #10;
-
-      
-        S1 = 1; S0 = 0;
-        SL_in = 0;
-        #10;
-
-
-        S1 = 0; S0 = 0;
-        #10;
-
-        $finish;
-    end
-
+    #20;
+    $finish; end
 endmodule
+
